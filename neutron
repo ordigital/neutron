@@ -58,6 +58,13 @@ epic() {
     start
 }
 
+ea() {
+	STEAM_PREFIX_ID="EA_APP"
+	INSTALLER_URL="https://origin-a.akamaihd.net/EA-Desktop-Client-Download/installer-releases/EAappInstaller.exe"
+	INSTALLER="EAappInstaller.exe"
+	LAUNCHER="Program Files/Electronic Arts/EA Desktop/EA Desktop/EADesktop.exe"
+    start
+}
 
 
 ### EXECUTE
@@ -66,12 +73,8 @@ start() {
 	export STEAM_COMPAT_DATA_PATH="$STEAM_COMPAT_DIR/$STEAM_PREFIX_ID"
 	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/$USER/$STEAM_HOME_DIR/ubuntu12_32/steam-runtime/pinned_libs_32:/home/$USER/$STEAM_HOME_DIR/ubuntu12_32/steam-runtime/pinned_libs_64:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.6:/usr/lib/wine:/usr/lib64/wine:/lib:/lib64:/home/$USER/$STEAM_HOME_DIR/ubuntu12_32/steam-runtime/lib/i386-linux-gnu:/home/$USER/$STEAM_HOME_DIR/ubuntu12_32/steam-runtime/usr/lib/i386-linux-gnu:/home/$USER/$STEAM_HOME_DIR/ubuntu12_32/steam-runtime/lib/x86_64-linux-gnu:/home/$USER/$STEAM_HOME_DIR/ubuntu12_32/steam-runtime/usr/lib/x86_64-linux-gnu:/home/$USER/$STEAM_HOME_DIR/ubuntu12_32/steam-runtime/lib:/home/$USER/$STEAM_HOME_DIR/ubuntu12_32/steam-runtime/usr/lib:"
 	PFXLockFile="$STEAM_COMPAT_DATA_PATH/pfx.lock"
-	check
-}
 
-### CHECK WHAT TO DO
-check() {
-EXE_PATH="$STEAM_COMPAT_DATA_PATH/pfx/drive_c/$LAUNCHER"
+	EXE_PATH="$STEAM_COMPAT_DATA_PATH/pfx/drive_c/$LAUNCHER"
 	if [ -f "$EXE_PATH" ]; then
 		echo -e "${GREEN}Launching launcher…${NC}"
 		"$PROTON_PATH/proton" run "$EXE_PATH" /deelevated 
@@ -94,7 +97,7 @@ winecfg() {
 
 commands() {
 	echo "${GREEN}usage: neutron [launcher]${NC}"
-	echo "where [launcher] is: 'ubisoft', 'gog', 'prime', 'epic' or 'winecfg [prefix_name]'"
+	echo "where [launcher] is: 'ubisoft', 'gog', 'prime', 'epic', 'ea' or 'winecfg [prefix_name]'"
 	exit 1
 }
 
@@ -104,6 +107,7 @@ case "$1" in
     "gog") gog ;;
 	"prime") prime ;;
 	"epic") epic ;;
+	"ea") ea ;;
 	"winecfg") cfg ;;
     *) commands ;;
 esac
