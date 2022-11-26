@@ -1,11 +1,11 @@
 #!/bin/sh
 
-### STEAM PATH
+### STEAM PATH - CHANGE TO YOURS!!!
 export STEAM_HOME_DIR="$HOME/.steam/steam"
-export STEAM_LIBRARY_DIR="$HOME/4TB/steam"
+export STEAM_LIBRARY_DIR="$HOME/.steam/steam"
 export STEAM_COMPAT_DIR="$STEAM_LIBRARY_DIR/steamapps/compatdata"
-#export PROTON_PATH="$STEAM_LIBRARY_DIR/steamapps/common/$PROTON_VERSION/Proton 7.0"
-export PROTON_PATH="$HOME/.steam/debian-installation/compatibilitytools.d/GE-Proton7-41"
+export PROTON_PATH="$STEAM_LIBRARY_DIR/steamapps/common/$PROTON_VERSION/Proton 7.0"
+#export PROTON_PATH="$HOME/.steam/debian-installation/compatibilitytools.d/GE-Proton7-41"
 
 ### PROTON SETTINGS
 export PROTON_LOG=0
