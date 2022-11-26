@@ -1,15 +1,11 @@
 #!/bin/sh
 
-# Usage: 
-# neutron ubisoft
-# neutron gog
-
-### STEAM PATH - SET THIS!!!
+### STEAM PATH
 export STEAM_HOME_DIR="$HOME/.steam/steam"
-export STEAM_LIBRARY_DIR="$HOME/.steam/steam"
+export STEAM_LIBRARY_DIR="$HOME/4TB/steam"
 export STEAM_COMPAT_DIR="$STEAM_LIBRARY_DIR/steamapps/compatdata"
-export PROTON_PATH="$STEAM_LIBRARY_DIR/steamapps/common/$PROTON_VERSION/Proton 7.0"
-export PROTON_PATH="$STEAM_LIBRARY_DIR/debian-installation/compatibilitytools.d/GE-Proton7-41"
+#export PROTON_PATH="$STEAM_LIBRARY_DIR/steamapps/common/$PROTON_VERSION/Proton 7.0"
+export PROTON_PATH="$HOME/.steam/debian-installation/compatibilitytools.d/GE-Proton7-41"
 
 ### PROTON SETTINGS
 export PROTON_LOG=0
@@ -46,6 +42,24 @@ gog() {
     start
 }
 
+prime() {
+	STEAM_PREFIX_ID="PRIME_GAMING"
+	INSTALLER_URL="https://download.amazongames.com/AmazonGamesSetup.exe"
+	INSTALLER="AmazonGamesSetup.exe"
+	LAUNCHER="users/steamuser/AppData/Local/Amazon Games/App/Amazon Games.exe"
+    start
+}
+
+epic() {
+	STEAM_PREFIX_ID="EPIC_GAMES"
+	INSTALLER_URL="https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi"
+	INSTALLER="EpicGamesLauncherInstaller.msi"
+	LAUNCHER="Program Files (x86)/Epic Games/Launcher/Portal/Binaries/Win32/EpicGamesLauncher.exe"
+    start
+}
+
+
+
 ### EXECUTE
 start() {
 	export STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM_COMPAT_DIR/$STEAM_PREFIX_ID"
@@ -57,40 +71,39 @@ start() {
 
 ### CHECK WHAT TO DO
 check() {
-	if [ -f "$INSTALLER" ]; then
-		install_or_launch
-	else
-		download
-		check
-	fi
-}
-
-### INSTALL OR LAUNCH
-install_or_launch() {
-	EXE_PATH="$STEAM_COMPAT_DATA_PATH/pfx/drive_c/$LAUNCHER"
+EXE_PATH="$STEAM_COMPAT_DATA_PATH/pfx/drive_c/$LAUNCHER"
 	if [ -f "$EXE_PATH" ]; then
 		echo -e "${GREEN}Launching launcher…${NC}"
 		"$PROTON_PATH/proton" run "$EXE_PATH" /deelevated 
 	else
 		echo -e "${YELLOW}Selected launcher not found"
-		echo -e "Setup proton prefix and launching installer"
 		echo -e "${RED}Please don't execute launcher after installation!${NC}"
 		mkdir -p "$STEAM_COMPAT_DATA_PATH"
+		wget -O "$INSTALLER" "$INSTALLER_URL"
+		case "$filename" in
+    		*.msi) INSTALLER="msiexec /i $INSTALLER" ;;
+		esac
 		"$PROTON_PATH/proton" waitforexitandrun "$PWD/$INSTALLER"
 		echo -e "${GREEN}Execute again to launch${NC}"
 	fi
 }
 
-### DOWNLOADING LAUNCHER
-download() {
-	echo -e "${BLUE}Downloading installer…${NC}"
-	wget -O "$INSTALLER" "$INSTALLER_URL"
-	echo -e "${GREEN}installer downloaded${NC}"
+winecfg() {
+	WINEPREFIX=$STEAM_COMPAT_DIR/$2/pfx/ WINEARCH=win64 $PROTON_PATH/files/bin/wine64 'winecfg.exe'
+}
+
+commands() {
+	echo "${GREEN}usage: neutron [launcher]${NC}"
+	echo "where [launcher] is: 'ubisoft', 'gog', 'prime', 'epic' or 'winecfg [prefix_name]'"
+	exit 1
 }
 
     
 case "$1" in
     "ubisoft") ubisoft ;;
     "gog") gog ;;
-    *) exit 1
+	"prime") prime ;;
+	"epic") epic ;;
+	"winecfg") cfg ;;
+    *) commands ;;
 esac
