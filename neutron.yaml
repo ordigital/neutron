@@ -1,9 +1,9 @@
 # Steam & Proton FULL paths (do not use "~", "$HOME" etc.)
 paths:
   steam_home:     "/home/user/.steam/steam"
-  steam_library:  "/home/user/steam"
-  steam_compat:   "/home/user/steam/steamapps/compatdata"
-  proton_path:    "/home/user/.steam/debian-installation/compatibilitytools.d/GE-Proton8-6"
+  steam_library:  "/home/user/.steam/steam"
+  steam_compat:   "/home/user/.steam/steam/steamapps/compatdata"
+  proton_path:    "/home/user/.steam/steam/steamapps/common/Proton - Experimental"
 
 # Tweaks
 settings:
