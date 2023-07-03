@@ -1,0 +1,55 @@
+# Steam & Proton FULL paths (do not use "~", "$HOME" etc.)
+paths:
+  steam_home:     "/home/user/.steam/steam"
+  steam_library:  "/home/user/steam"
+  steam_compat:   "/home/user/steam/steamapps/compatdata"
+  proton_path:    "/home/user/.steam/debian-installation/compatibilitytools.d/GE-Proton8-6"
+
+# Tweaks
+settings:
+  wine_debug:       "-all"
+  proton_log:       0
+  hide_nvidia_gpu:  0
+  enable_nvapi:     1
+  vkd3d_config:     "dxr"
+  fullscreen_fsr:   1
+  use_wined3d:      0
+
+# Game launchers
+games:
+
+  ubisoft:
+    name:       "Ubisoft Connect"
+    prefix:     "UBISOFT_CONNECT"
+    url:        "https://ubi.li/4vxt9" 
+    installer:  "UbisoftConnectInstaller.exe"
+    launcher:   "Program Files (x86)/Ubisoft/Ubisoft Game Launcher/UbisoftConnect.exe" 
+
+  gog:
+    name:       "GOG Galaxy"
+    prefix:     "GOG_GALAXY"
+    url:        "https://webinstallers.gog-statics.com/download/GOG_Galaxy_2.0.exe"
+    installer:  "GOG_Galaxy_2.0.exe"
+    launcher:   "Program Files (x86)/GOG Galaxy/GalaxyClient.exe"
+  
+  prime:
+    name:       "Amazon Prime Gaming"
+    prefix:     "PRIME_GAMING"
+    url:        "https://download.amazongames.com/AmazonGamesSetup.exe"
+    installer:  "AmazonGamesSetup.exe"
+    launcher:   "users/steamuser/AppData/Local/Amazon Games/App/Amazon Games.exe"
+  
+  epic:
+    name:       "Epic Games Launcher"
+    prefix:     "EPIC_GAMES"
+    url:        "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi"
+    installer:  "EpicGamesLauncherInstaller.msi"
+    launcher:   "Program Files (x86)/Epic Games/Launcher/Portal/Binaries/Win32/EpicGamesLauncher.exe"
+  
+  ea:
+    name:       "EA App Launcher"
+    prefix:     "EA_APP"
+    url:        "https://origin-a.akamaihd.net/EA-Desktop-Client-Download/installer-releases/EAappInstaller.exe"
+    installer:  "EAappInstaller.exe"
+    launcher:   "Program Files/Electronic Arts/EA Desktop/EA Desktop/EADesktop.exe"
+

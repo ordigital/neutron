@@ -1,0 +1,94 @@
+#!/bin/bash
+
+colors() {
+	export RED='\033[0;31m'
+	export GREEN='\033[0;32m'
+	export BLUE='\033[0;34m'
+	export YELLOW='\033[1;33m'
+	export NC='\033[0m' # No Color
+}
+
+get_cfg() {
+  local section="$1"
+  local section_data="$(yq eval ".$section" neutron.yaml)"
+  while IFS=": " read -r key value; do
+    value="${value%\"}"
+    export "${key}=${value#\"}"
+  done <<< "$section_data"
+}
+
+paths() {
+	get_cfg "paths"
+ 	export STEAM_HOME_DIR="$steam_home"
+	export STEAM_LIBRARY_DIR="$steam_library"
+	export STEAM_COMPAT_DIR="$steam_compat"
+	export PROTON_PATH="$proton_path"
+}
+
+settings() {
+	# Settings
+	get_cfg "settings"
+	export PROTON_LOG=${proton_log}
+	export WINEDEBUG=${wine_debug}
+	export PROTON_HIDE_NVIDIA_GP=${hide_nvidia_gpu}
+	export PROTON_ENABLE_NVAPI=${enable_nvapi}
+	export VKD3D_CONFIG="$vk3d_config"
+	export WINE_FULLSCREEN_FSR=${fullscreen_fsr}
+	export PROTON_USE_WINED3D=${use_wined3d}
+	export VKD3D_DEBUG=none
+	export VKD3D_SHADER_DEBUG=none
+}
+
+start() {
+	# Set variables
+	local game="${1}"
+	local winecfg="${2}"
+
+	get_cfg "games.${game}"
+
+	export STEAM_COMPAT_CLIENT_INSTALL_PATH="$steam_compat/$prefix"
+	export STEAM_COMPAT_DATA_PATH="$steam_compat/$prefix"
+	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$steam_home/ubuntu12_32/steam-runtime/pinned_libs_32:$steam_home/ubuntu12_32/steam-runtime/pinned_libs_64:/usr/lib64/qt-3.3/lib:/usr/lib64/tcl8.6:/usr/lib/wine:/usr/lib64/wine:/lib:/lib64:$steam_home/ubuntu12_32/steam-runtime/lib/i386-linux-gnu:$steam_home/ubuntu12_32/steam-runtime/usr/lib/i386-linux-gnu:/home/$steam_home/ubuntu12_32/steam-runtime/lib/x86_64-linux-gnu:$steam_home/ubuntu12_32/steam-runtime/usr/lib/x86_64-linux-gnu:/home/$steam_home/ubuntu12_32/steam-runtime/lib:$steam_home/ubuntu12_32/steam-runtime/usr/lib:"
+	PFXLockFile="$STEAM_COMPAT_DATA_PATH/pfx.lock"
+	EXE_PATH="$STEAM_COMPAT_DATA_PATH/pfx/drive_c/$launcher"
+
+	# WINECFG
+	if [ "${winecfg}" == "winecfg" ]; then
+		WINEPREFIX="$STEAM_COMPAT_DATA_PATH/pfx/" WINEARCH="win64" $proton_path/files/bin/wine64 'winecfg.exe'
+	else
+
+	# 	LAUNCHER
+		if [ -f "$EXE_PATH" ]; then
+			# Run launcher
+			echo -e "${GREEN}Launching launcher…${NC}"
+			"$proton_path/proton" run "$EXE_PATH" 
+			# /deelevated 
+		else
+			Download and install launcher
+			echo -e "${YELLOW}Selected launcher not found"
+			echo -e "${RED}Please don't execute launcher after installation!${NC}"
+			mkdir -p "$STEAM_COMPAT_DATA_PATH"
+			wget -O "$installer" "$url"
+			case "$filename" in
+				*.msi) INSTALLER="msiexec /i $installer" ;;
+			esac
+			"$proton_path/proton" waitforexitandrun "$PWD/$installer"
+			echo -e "${GREEN}Execute again to launch${NC}"
+		fi
+	fi
+}
+
+
+# Script dir as working dir
+cd $(dirname "$0")
+colors
+paths
+settings
+
+if [ $# -eq 0 ]; then
+	echo "${GREEN}No game specified.{$NC}"
+	exit 2
+else
+    start "${1}" "${2}"
+	exit 1
+fi

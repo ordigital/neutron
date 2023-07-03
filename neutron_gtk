@@ -1,0 +1,60 @@
+#!/usr/bin/python3
+
+import gi, sys, yaml, os
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk, Pango
+import subprocess
+
+# Open config
+script_path = os.path.realpath(__file__)
+script_dir = os.path.dirname(script_path)
+config_file = os.path.join(script_dir, 'neutron.yaml')
+exec_file = os.path.join(script_dir, 'neutron')
+
+with open(config_file, 'r') as file:
+    config = yaml.safe_load(file)
+
+buttons = []
+
+for game, game_name in config['games'].items():
+    name = game_name.get('name')
+    buttons.append([name,game])
+
+# Window
+class MainWindow(Gtk.Window):
+    def __init__(self):
+        Gtk.Window.__init__(self, title="Neutron GTK")
+        self.connect("destroy", self.on_destroy)
+
+    def on_destroy(self, window):
+        sys.exit()
+
+# window properties
+window = MainWindow()
+window.set_title("Neutron GTK")
+window.set_default_size(400, -1)
+window.set_position(Gtk.WindowPosition.CENTER)
+
+# elements container
+box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+window.add(box)
+
+# label
+label = Gtk.Label(label="Proton Launchers")
+label.set_size_request(150, 20)
+label.override_font(Pango.FontDescription.from_string("Sans 9"))
+label.override_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(red=0.3922, green=0.3922, blue=0.3922, alpha=1.0))
+box.pack_start(label, False, False, 0)
+
+# create button
+for row in buttons:
+    def button_click(widget, param):
+        subprocess.run([exec_file,param])
+    button = Gtk.Button(label=row[0])
+    button.set_size_request(150, 30)
+    button.connect("clicked", button_click, row[1])
+    box.pack_start(button, False, False, 0)
+
+# show app
+window.show_all()
+Gtk.main()
